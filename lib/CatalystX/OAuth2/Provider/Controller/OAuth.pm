@@ -4,6 +4,8 @@ use Moose::Autobox;
 use MooseX::Types::Moose qw/ HashRef ArrayRef ClassName Object Str /;
 use MooseX::Types::Common::String qw/ NonEmptySimpleStr /;
 use JSON::XS ();
+use OAuth::Lite::Token;
+use CatalystX::OAuth2::Provider::Error;
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller::ActionRole'; }
@@ -22,11 +24,31 @@ has '+_trait_merge' => ( default => 1 );
 
 __PACKAGE__->config( traits => [qw/AuthorizationCode/] );
 
-=head2 base
+=head2 get_client
 =cut
-sub base :Chained('/') :PathPart('oauth') :CaptureArgs(0) { }
+sub _get_client : Private {
+    my ( $self, $ctx ) = @_;
+    foreach my $k ( values %{ $self->{auth_info} } ) {
+        return $k if ( $k->{client_id} eq $ctx->req->param('client_id') )
+    }
+}
+
+=head2 base
+  Base for those chains
+=cut
+sub base :Chained('/') :PathPart('oauth') :CaptureArgs(0) {
+    my ( $self, $ctx ) = @_;
+
+    CatalystX::OAuth2::Provider::Error::InvalidRequest->throw( description => 'Invalid request' )
+       if ! $ctx->req->param("client_id");
+    my $client    = $ctx->forward('_get_client');
+    $ctx->stash( client => $client ); #use this client for testing
+    CatalystX::OAuth2::Provider::Error::InvalidClient->throw( description => "Invalid client id" )
+       if ! $ctx->stash->{client};
+}
 
 =head2 logged_in_required
+ Let's chained this function to make require to log in
 =cut
 sub logged_in_required
     :Chained('base')
@@ -35,12 +57,17 @@ sub logged_in_required
 {
     my ( $self, $ctx ) = @_;
     $ctx->forward( 'user_existed_or_authenticated' ); #CHECK USER
+
+    my $t = OAuth::Lite::Token->new_random;
+    $ctx->user->{token} = $t->token;
 }
 
 =head2 user_existed_or_authenticated
+  See if user is logged in or not
+  If not try to authenticate, otherwise failed.
 =cut
 sub user_existed_or_authenticated
-    :Private 
+    :Private
 {
     my ( $self, $ctx ) = @_;
     return 1 if $ctx->user_exists();
@@ -58,6 +85,7 @@ sub user_existed_or_authenticated
 }
 
 =head2 logged_in_not_required
+  An empty function, just for those who wanna chain this. Doesn't matter.
 =cut
 sub logged_in_not_required
     :Chained('base')
@@ -66,6 +94,7 @@ sub logged_in_not_required
 {}
 
 =head2 token
+    Token enpoint
 =cut
 sub token
     :Chained('logged_in_not_required')
@@ -73,22 +102,19 @@ sub token
     :Args(0)
 {
     my ( $self, $ctx ) = @_;
-    ### LOGIC ###
-      #Get the client grant_type param
-      #Forward to GrantHandler
-      #GrantHandler decides what to do by a recieved grant_type
-          # *** In certain type of grant_type will interact with Model ***
-      #IF a valid client
-      #Reponse access_token as key in JSON format to client
-      
-    my %test_data = ( "access_token"  =>  "04u7h-4cc355-70k3n",
-                      "expires_in"    =>   3600,
-                      "scope"         =>   undef,
-                      "refresh_token" => "04u7h-r3fr35h-70k3n" ); #testing
-    $ctx->res->body( JSON::XS->new->pretty(1)->encode(\%test_data) );
+      my $grant_type = $ctx->req->param('grant_type');
+      $ctx->forward( 'handle_grant_type', [ $grant_type ] );
+      my %test_data = ( "error"  =>  "Unsupport Grant type", ); #testing
+      $ctx->res->body( JSON::XS->new->pretty(1)->encode( \%test_data ) );
 }
 
+sub handle_grant_type : Private {
+    my ( $self, $ctx, $grant_type ) = @_;
+}
+
+
 =head2 authorize
+    Authorize endpoint
 =cut
 sub authorize
     :Chained('logged_in_required')
@@ -96,15 +122,6 @@ sub authorize
     :Args(0)
 {
     my ( $self, $ctx ) = @_;
-    ### LOGIC ###
-    # Verify client from $ctx->req
-    # IF NOT a valid client
-        #THEN Throw an error says invalid_client
-    # IF a valid client
-        #THEN 
-           #load client information
-           #generate code and access_token
-           #REDIRECT back to client_callback_uri + code
 
     if ( $ctx->req->method eq 'GET' ) {
        $ctx->stash( authorize_endpoint => $ctx->uri_for_action($ctx->action) );
@@ -114,15 +131,14 @@ sub authorize
     if ( $ctx->req->method eq 'POST' ) {
 
         my $uri  = $ctx->uri_for( $ctx->req->param("redirect_uri"),
-                                      { code         => q{code_bar},
-                                        redirect_uri => $ctx->req->param("redirect_uri"),  
+                                      { code         => $ctx->sessionid,
+                                        redirect_uri => $ctx->req->param("redirect_uri"),
                                       } );
         $uri     =~ m,/(?<http>http://)(?<url>[\w\d:#@%/;$()~_?\+-=\\\.&]*),; #to external URI
         $ctx->res->redirect( $+{http} . $+{url} );
     }
     $ctx->detach();
 }
-
 
 =pod
 =cut

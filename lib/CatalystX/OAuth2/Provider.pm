@@ -12,15 +12,8 @@ after 'setup_components' => sub {
         component => 'CatalystX::OAuth2::Provider::Controller::OAuth',
         as        => 'Controller::OAuth',
     );
-    
-    # CatalystX::InjectComponent->inject(
-    #     into      => $class,
-    #     component => 'CatalystX::OAuth2::Provider::Authorization::Handler',
-    #     as        => 'Authorization::Handler',
-    # );
 
 };
-
 
 =head1 NAME
 

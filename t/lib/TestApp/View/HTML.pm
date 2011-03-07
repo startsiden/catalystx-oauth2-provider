@@ -8,7 +8,7 @@ __PACKAGE__->config(
     render_die => 1,
     WRAPPER => 'wrapper.tt',
     TEMPLATE_EXTENSION => '.tt',
-    INCLUDE_PATH => [ TestApp->path_to('TestApp', 'root') ],
+    INCLUDE_PATH => [ TestApp->path_to('root') ],
 );
 
 1;

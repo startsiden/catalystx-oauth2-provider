@@ -3,7 +3,7 @@
 <body>
     <p>
     [% IF c.user -%]
-        ([% c.user.id %] logged in)
+        ([% c.user.id %] <a href='[% c.uri_for('/logout') %]'>logout</a>)
     [% ELSE -%]
         (Guess)
     [% END -%]

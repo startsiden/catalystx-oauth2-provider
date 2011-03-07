@@ -6,12 +6,14 @@ BEGIN { extends 'Catalyst::Controller' }
 
 __PACKAGE__->config(namespace => q{});
 
+sub auto : Private {
+  my ( $self, $ctx ) = @_;
+  $ctx->stash( current_view => 'HTML' );
+  return 1;
+}
+
 sub base : Chained('/') PathPart('') CaptureArgs(0) {
     my ( $self, $ctx ) = @_;
-    use Data::Dumper;
-    warn "LOGGEDIN _REQUIRED";
-    warn Dumper $ctx->user_exists;
-    warn Dumper $ctx->user;
 }
 
 sub test : Chained('base') PathPart('') Args(0) {
@@ -41,3 +43,4 @@ sub end : ActionClass('RenderView') {
 
 __PACKAGE__->meta->make_immutable;
 
+1;

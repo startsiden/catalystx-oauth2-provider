@@ -8,6 +8,11 @@ name 'CatalystX-OAuth2-Provider';
 all_from 'lib/CatalystX/OAuthProvider.pm';
 
 requires 'Moose';
+requires 'CatalystX::InjectComponent';
+requires 'Moose::Autobox';
+requires 'Catalyst::Controller::ActionRole';
+requires 'OAuth::Lite';
+requires 'JSON::XS';
 requires 'namespace::autoclean';
 
 build_requires 'Catalyst::Runtime' => '5.80015';

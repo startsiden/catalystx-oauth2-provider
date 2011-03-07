@@ -1,8 +1,6 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use FindBin qw/$Bin/;
-use lib "$Bin/../../../lib", "$Bin/../";
 
 BEGIN {
     $ENV{CATALYST_SCRIPT_GEN} = 40;
