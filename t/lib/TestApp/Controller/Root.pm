@@ -18,8 +18,6 @@ sub base : Chained('/') PathPart('') CaptureArgs(0) {
 
 sub test : Chained('base') PathPart('') Args(0) {
     my ( $self, $ctx ) = @_;
-    # use Data::Dumper;
-    # die Dumper($ctx->view('HTML')->include_path);
 }
 
 =head2 logout

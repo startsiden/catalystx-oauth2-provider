@@ -10,10 +10,7 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller::ActionRole'; }
 
-with qw(
-    CatalystX::Component::Traits
-    Catalyst::Component::ContextClosure
-);
+with qw(CatalystX::Component::Traits);
 
 
 BEGIN { extends 'Catalyst::Controller::ActionRole'; }
@@ -57,9 +54,10 @@ sub logged_in_required
 {
     my ( $self, $ctx ) = @_;
     $ctx->forward( 'user_existed_or_authenticated' ); #CHECK USER
-
-    my $t = OAuth::Lite::Token->new_random;
-    $ctx->user->{token} = $t->token;
+    if (! $ctx->user->{token}) {
+       my $t = OAuth::Lite::Token->new_random;
+       $ctx->user->{token} = $t->token;
+    }
 }
 
 =head2 user_existed_or_authenticated
@@ -104,8 +102,9 @@ sub token
     my ( $self, $ctx ) = @_;
       my $grant_type = $ctx->req->param('grant_type');
       $ctx->forward( 'handle_grant_type', [ $grant_type ] );
-      my %test_data = ( "error"  =>  "Unsupport Grant type", ); #testing
-      $ctx->res->body( JSON::XS->new->pretty(1)->encode( \%test_data ) );
+      my %data = ( error  =>  'unsupported_grant_type',
+                   error_description => 'Invalid grant type');
+      $ctx->res->body( JSON::XS->new->pretty(1)->encode( \%data ) );
 }
 
 sub handle_grant_type : Private {

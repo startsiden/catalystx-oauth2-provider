@@ -1,35 +1,24 @@
 package Catalyst::ActionRole::ProtectedResource;
 use Moose::Role;
+use HTTP::Headers::Util qw(split_header_words);
 use namespace::autoclean;
-
-
-before 'execute' => sub {
-  my ( $self, $controller, $ctx, $test ) = @_;
-  my $authorization =  $ctx->req->header('authorization');
-  $authorization    =~ m{MAC\s+(?<token>token=['||"][\w+\d+]+['|"]),
-                               (?<timestamp>timestamp=['||"][\w+\d+]+['|"]),
-                               (?<nonce>nonce=['||"][\w+\d+]+['|"]),
-                               (?<signature>signature=['||"][\w+\d+=]+['|"])}xs;
-  my ( $token, $timestamp, $nonce, $signature );
-  eval "\$$+{token};\$$+{timestamp};\$$+{nonce};\$$+{signature}";
-  $ctx->stash->{auth}->{token}     = $token;
-  $ctx->stash->{auth}->{timestamp} = $timestamp;
-  $ctx->stash->{auth}->{nonce}     = $nonce;
-  $ctx->stash->{auth}->{signature} = $signature;
-};
 
 around execute => sub {
     my $orig  = shift;
     my $self  = shift;
     my ( $controller, $ctx, @args ) = @_;
 
-    if ( ! $ctx->user 
-         or !( $ctx->user->{token} eq $ctx->stash->{auth}->{token} ) ) {
-        CatalystX::OAuth2::Provider::Error::InvalidToken->throw( description => 'Invalide token' );
-        $ctx->detach;
-    } else {
-        return $self->$orig(@_);
+    my @values = split_header_words( $ctx->request->header('authorization') );
+    my $token  = $values[0][-1];
+
+    # $ctx->log->debug("AUTH TOKEN: $token, USER TOKEN: " . $ctx->user->{token}) if $ctx->debug;
+
+    if ( ! $ctx->user or !( $ctx->user->{token} eq $token ) ) {
+        $ctx->stash( error => "invalid_request",
+                     error_description => "Wrong token" );
+
     }
+    return $self->$orig(@_);
 };
 
 1;
