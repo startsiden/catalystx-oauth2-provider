@@ -11,9 +11,9 @@ around execute => sub {
     my @values = split_header_words( $ctx->request->header('authorization') );
     my $token  = $values[0][-1];
 
-    # $ctx->log->debug("AUTH TOKEN: $token, USER TOKEN: " . $ctx->user->{token}) if $ctx->debug;
+    $ctx->log->debug("AUTH TOKEN: $token, USER TOKEN: " . $ctx->session->{token}) if $ctx->debug;
 
-    if ( ! $ctx->user or !( $ctx->user->{token} eq $token ) ) {
+    if ( ! $ctx->user or !( $ctx->session->{token} eq $token ) ) {
         $ctx->stash( error => "invalid_request",
                      error_description => "Wrong token" );
 

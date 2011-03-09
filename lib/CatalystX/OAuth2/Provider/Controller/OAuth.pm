@@ -54,9 +54,9 @@ sub logged_in_required
 {
     my ( $self, $ctx ) = @_;
     $ctx->forward( 'user_existed_or_authenticated' ); #CHECK USER
-    if (! $ctx->user->{token}) {
+    if (! $ctx->session->{token}) {
        my $t = OAuth::Lite::Token->new_random;
-       $ctx->user->{token} = $t->token;
+       $ctx->session->{token} = $t->token;
     }
 }
 
@@ -77,7 +77,7 @@ sub user_existed_or_authenticated
                   } );
 
     $ctx->stash( template => $self->{login_form}->{template} 
-                              || 'user/login.tt' );
+                              || 'oauth/login.tt' );
     $ctx->res->status( 403 );
     $ctx->detach();
 }
@@ -124,7 +124,8 @@ sub authorize
 
     if ( $ctx->req->method eq 'GET' ) {
        $ctx->stash( authorize_endpoint => $ctx->uri_for_action($ctx->action) );
-       $ctx->stash( template => 'oauth/authorize.tt' ); 
+       $ctx->stash( template => $self->{authorize_form}->{template}
+                                 || 'oauth/authorize.tt' );
     }
 
     if ( $ctx->req->method eq 'POST' ) {

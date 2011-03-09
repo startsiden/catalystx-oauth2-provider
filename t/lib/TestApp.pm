@@ -8,7 +8,7 @@ use Catalyst qw/
     Session
     Session::Store::FastMmap
     Session::State::Cookie
-    Session::State::URI
+    Session::State::URIhook
     Session::PerUser
 /;
 extends 'Catalyst';
@@ -43,6 +43,9 @@ __PACKAGE__->config(
                username => 'mail',
                password => 'userPassword'
            }
+        },
+        authorize_form => {
+            template => 'oauth/authorize.tt',
         },
         auth_info => {
             client_1 => {

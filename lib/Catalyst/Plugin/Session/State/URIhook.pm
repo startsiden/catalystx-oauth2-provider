@@ -1,4 +1,4 @@
-package Catalyst::Plugin::Session::State::URI;
+package Catalyst::Plugin::Session::State::URIhook;
 
 use Moose;
 use HTML::TokeParser::Simple;

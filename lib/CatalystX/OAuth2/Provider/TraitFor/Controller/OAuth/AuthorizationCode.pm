@@ -10,10 +10,10 @@ requires qw/
 around 'handle_grant_type' => sub {
     my ( $orig, $self, $ctx, $grant_type ) = @_;
     if ( $grant_type && ( $grant_type eq 'authorization_code' ) ) {
-        my %data = (  access_token  =>  $ctx->user->{token},
+        my %data = (  access_token  =>  $ctx->session->{token},
                       expires_in    =>  3600,  #TODO: Make access_token expires
                       scope         =>  undef, #TODO: Support scope
-                      refresh_token =>  $ctx->user->{token} );
+                      refresh_token =>  $ctx->session->{token} );
         $ctx->res->body( JSON::XS->new->pretty(1)->encode( \%data ) );
         $ctx->detach();
     }
