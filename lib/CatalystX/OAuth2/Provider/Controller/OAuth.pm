@@ -78,7 +78,7 @@ sub user_existed_or_authenticated
 
     $ctx->stash( template => $self->{login_form}->{template} 
                               || 'oauth/login.tt' );
-    $ctx->res->status( 403 );
+    #$ctx->res->status( 403 ); #This doesn't work when running with fastcgi
     $ctx->detach();
 }
 
