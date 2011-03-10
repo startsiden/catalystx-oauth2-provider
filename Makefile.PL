@@ -14,8 +14,7 @@ requires 'Catalyst::Controller::ActionRole';
 requires 'OAuth::Lite';
 requires 'JSON::XS';
 requires 'HTTP::Headers::Util';
-requires 'Crypt::CBC';
-requires 'MIME::Base64';
+requires 'Digest::HMAC_SHA1';
 requires 'namespace::autoclean';
 
 build_requires 'Catalyst::Runtime' => '5.80015';

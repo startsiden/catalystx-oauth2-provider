@@ -8,8 +8,8 @@ use Catalyst qw/
     Session
     Session::Store::FastMmap
     Session::State::Cookie
-    Session::State::URIhook
-    Session::PerUser
+    Session::State::URI
+    Session::State::Auth
 /;
 extends 'Catalyst';
 

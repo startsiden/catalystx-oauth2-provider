@@ -22,8 +22,9 @@ has '+_trait_merge' => ( default => 1 );
 __PACKAGE__->config( traits => [qw/AuthorizationCode/] );
 
 =head2 get_client
+  Get client authorization detail
 =cut
-sub _get_client : Private {
+sub _get_client : Private {  #TODO: Make some sorts of class that suport 'Model'
     my ( $self, $ctx ) = @_;
     foreach my $k ( values %{ $self->{auth_info} } ) {
         return $k if ( $k->{client_id} eq $ctx->req->param('client_id') )

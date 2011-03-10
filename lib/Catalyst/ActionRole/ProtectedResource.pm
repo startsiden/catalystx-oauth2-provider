@@ -1,6 +1,7 @@
 package Catalyst::ActionRole::ProtectedResource;
 use Moose::Role;
 use HTTP::Headers::Util qw(split_header_words);
+use Digest::HMAC_SHA1 qw/hmac_sha1/;
 use namespace::autoclean;
 
 around execute => sub {
@@ -10,10 +11,12 @@ around execute => sub {
 
     my @values = split_header_words( $ctx->request->header('authorization') );
     my $token  = $values[0][-1];
+    my $hmac   = Digest::HMAC_SHA1->new('secret');
+    $hmac->add($ctx->session->{token});
+    my $server_digest = $hmac->b64digest;
+    $ctx->log->debug("CLIENT: $token, SERVER: $server_digest") if $ctx->debug;
 
-    $ctx->log->debug("AUTH TOKEN: $token, USER TOKEN: " . $ctx->session->{token}) if $ctx->debug;
-
-    if ( ! $ctx->user or !( $ctx->session->{token} eq $token ) ) {
+    if ( ! $ctx->user or !( $server_digest eq $token ) ) {
         $ctx->stash( error => "invalid_request",
                      error_description => "Wrong token" );
 
