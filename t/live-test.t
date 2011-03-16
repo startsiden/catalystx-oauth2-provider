@@ -25,7 +25,7 @@ subtest 'simple test for endpoint', sub {
     my $client_id = "36d24a484e8782decbf82a46459220a10518239e";
     $mech->get_ok("http://localhost/oauth/token?client_id=$client_id", 'a token endpoint');
     $mech->get("http://localhost/oauth/authorize?client_id=$client_id", 'an authorize endpoint');
-    is( $mech->status, 403, "Login required" );
+    is( $mech->status, 200, "Login required" );
 };
 
 subtest 'test for protected resource', sub {
