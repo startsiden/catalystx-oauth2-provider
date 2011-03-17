@@ -10,11 +10,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller::ActionRole'; }
 
-with qw(CatalystX::Component::Traits);
-
-
-BEGIN { extends 'Catalyst::Controller::ActionRole'; }
-
 with 'CatalystX::Component::Traits';
 
 has '+_trait_merge' => ( default => 1 );
@@ -72,12 +67,12 @@ sub user_existed_or_authenticated
     return 1 if $ctx->user_exists();
     return 1 if $ctx->authenticate(
                   { username => $ctx->req->param('username')
-                                || $ctx->req->param($self->{login_form}->{field_names}->{username}), 
+                                || $ctx->req->param($self->{login_form}->{field_names}->{username}),
                     password => $ctx->req->param('password')
                                 || $ctx->req->param($self->{login_form}->{field_names}->{password}),
                   } );
 
-    $ctx->stash( template => $self->{login_form}->{template} 
+    $ctx->stash( template => $self->{login_form}->{template}
                               || 'oauth/login.tt' );
     #$ctx->res->status( 403 ); #This doesn't work when running with fastcgi
     $ctx->detach();
