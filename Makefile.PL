@@ -24,6 +24,13 @@ build_requires 'Test::More' => '0.88';
 author_requires 'Test::Pod::Coverage' => '1.04';
 author_requires 'Test::Pod' => '1.14';
 
+test_requires 'Catalyst::Plugin::Authentication';
+test_requires 'Catalyst::Plugin::Session';
+test_requires 'Catalyst::Plugin::Session::Store::FastMmap';
+test_requires 'Catalyst::Plugin::Session::State::Cookie';
+test_requires 'Catalyst::Plugin::Session::State::URI';
+test_requires 'Catalyst::Plugin::Session::State::Auth';
+
 author_tests 't/author';
 
 resources repository => 'https://github.com/startsiden/catalystx-oauth2-provider';
