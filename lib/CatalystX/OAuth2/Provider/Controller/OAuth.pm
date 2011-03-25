@@ -4,7 +4,6 @@ use Moose::Autobox;
 use MooseX::Types::Moose qw/ HashRef ArrayRef ClassName Object Str /;
 use MooseX::Types::Common::String qw/ NonEmptySimpleStr /;
 use JSON::XS ();
-use OAuth::Lite::Token;
 use CatalystX::OAuth2::Provider::Error;
 use namespace::autoclean;
 
@@ -22,9 +21,8 @@ has '+_trait_merge' => ( default => 1 );
 __PACKAGE__->config( traits => [qw/AuthorizationCode/] );
 
 =head2 get_client
-  Get client authorization detail
 =cut
-sub _get_client : Private {  #TODO: Make some sorts of class that suport 'Model'
+sub _get_client : Private {
     my ( $self, $ctx ) = @_;
     foreach my $k ( values %{ $self->{auth_info} } ) {
         return $k if ( $k->{client_id} eq $ctx->req->param('client_id') )
@@ -55,10 +53,6 @@ sub logged_in_required
 {
     my ( $self, $ctx ) = @_;
     $ctx->forward( 'user_existed_or_authenticated' ); #CHECK USER
-    if (! $ctx->session->{token}) {
-       my $t = OAuth::Lite::Token->new_random;
-       $ctx->session->{token} = $t->token;
-    }
 }
 
 =head2 user_existed_or_authenticated
@@ -78,7 +72,7 @@ sub user_existed_or_authenticated
                   } );
 
     $ctx->stash( template => $self->{login_form}->{template} 
-                              || 'oauth/login.tt' );
+                              || 'user/login.tt' );
     #$ctx->res->status( 403 ); #This doesn't work when running with fastcgi
     $ctx->detach();
 }

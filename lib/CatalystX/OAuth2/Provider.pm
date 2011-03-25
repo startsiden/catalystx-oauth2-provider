@@ -63,6 +63,9 @@ CatalystX::OAuth2::Provider -
                     client_secret  => q{THIS_IS_SECRET},
                     redirect_uri   => q{CLIENT_REDIRECT_URI},
                 },
+            },
+            protected_resource => {
+               secret_key => 'secret',
             }
         }
     );
@@ -92,6 +95,8 @@ your Catalyst application configuration.
 =head1 BUGS
 
 =head1 AUTHOR
+
+zdk (Warachet Samtalee)
 
 =head1 COPYRIGHT & LICENSE
 

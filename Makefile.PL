@@ -5,7 +5,7 @@ use Module::Install::AuthorRequires;
 use Module::Install::AuthorTests;
 
 name 'CatalystX-OAuth2-Provider';
-all_from 'lib/CatalystX/OAuthProvider.pm';
+all_from 'lib/CatalystX/OAuth2/Provider.pm';
 
 requires 'Moose';
 requires 'CatalystX::InjectComponent';
@@ -26,10 +26,10 @@ author_requires 'Test::Pod' => '1.14';
 
 author_tests 't/author';
 
-resources repository => 'git://somewhere.com/myproject.git';
+resources repository => 'https://github.com/startsiden/catalystx-oauth2-provider';
 
 if ($Module::Install::AUTHOR) {
-    system("pod2text lib/CatalystX/OAuthProvider.pm > README")
+    system("pod2text lib/CatalystX/OAuth2/Provider.pm > README")
         and die $!;
 }
 

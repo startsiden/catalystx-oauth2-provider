@@ -11,7 +11,7 @@ around execute => sub {
 
     my @values = split_header_words( $ctx->request->header('authorization') );
     my $token  = $values[0][-1];
-    my $hmac   = Digest::HMAC_SHA1->new('secret');
+    my $hmac   = Digest::HMAC_SHA1->new( $ctx->config->{'Controller::OAuth'}->{protected_resource}->{secret_key} );
     $hmac->add($ctx->session->{token});
     my $server_digest = $hmac->b64digest;
     $ctx->log->debug("CLIENT: $token, SERVER: $server_digest") if $ctx->debug;
