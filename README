@@ -3,7 +3,6 @@ NAME
 
 VERSION
     Version 0.0003
-
 SYNOPSIS
         package MyApp;
         use Moose;

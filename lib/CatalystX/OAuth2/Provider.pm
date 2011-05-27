@@ -19,6 +19,9 @@ after 'setup_components' => sub {
 
 CatalystX::OAuth2::Provider -
 
+=head1 VERSION
+    Version 0.0003
+
 =head1 SYNOPSIS
 
     package MyApp;
