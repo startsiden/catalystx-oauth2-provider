@@ -25,6 +25,7 @@ build_requires 'Test::More' => '0.88';
 author_requires 'Test::Pod::Coverage' => '1.04';
 author_requires 'Test::Pod' => '1.14';
 
+test_requires 'Catalyst::Action::RenderView';
 test_requires 'Catalyst::Plugin::Authentication';
 test_requires 'Catalyst::Plugin::Session';
 test_requires 'Catalyst::Plugin::Session::Store::FastMmap';
