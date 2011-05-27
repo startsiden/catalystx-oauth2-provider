@@ -58,6 +58,9 @@ __PACKAGE__->config(
                 client_secret  => q{947da6393f802a7abe4ecf17ff12cc3f10704ee4},
                 redirect_uri   => q{http://localhost.client:3333/callback},
             }
+        },
+        protected_resource => {
+           secret_key => 'secret',
         }
     },
     'Plugin::Session' => { param => 'code', rewrite_body => 0 }, #Handle authorization code

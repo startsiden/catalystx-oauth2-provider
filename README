@@ -44,6 +44,9 @@ SYNOPSIS
                         client_secret  => q{THIS_IS_SECRET},
                         redirect_uri   => q{CLIENT_REDIRECT_URI},
                     },
+                },
+                protected_resource => {
+                   secret_key => 'secret',
                 }
             }
         );

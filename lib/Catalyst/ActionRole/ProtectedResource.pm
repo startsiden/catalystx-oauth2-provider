@@ -9,14 +9,15 @@ around execute => sub {
     my $self  = shift;
     my ( $controller, $ctx, @args ) = @_;
 
-    my @values = split_header_words( $ctx->request->header('authorization') );
-    my $token  = $values[0][-1];
-    my $hmac   = Digest::HMAC_SHA1->new( $ctx->config->{'Controller::OAuth'}->{protected_resource}->{secret_key} );
+    my @values  = split_header_words( $ctx->request->header('authorization') );
+    my $token   = $values[0][-1];
+    my $secret  = $ctx->config->{'Controller::OAuth'}->{protected_resource}->{secret_key};
+    my $hmac    = Digest::HMAC_SHA1->new($secret);
+    my $s_token = $ctx->session->{token};
     $hmac->add($ctx->session->{token});
     my $server_digest = $hmac->b64digest;
-    $ctx->log->debug("CLIENT: $token, SERVER: $server_digest") if $ctx->debug;
-
-    if ( ! $ctx->user or !( $server_digest eq $token ) ) {
+    $ctx->log->debug("S: $secret, CLIENT: $token, SERVER: $server_digest, SStoken: $s_token") if $ctx->debug;
+    if ( !$ctx->user or ( $token ne $server_digest ) ) {
         $ctx->stash( error => "invalid_request",
                      error_description => "Wrong token" );
 

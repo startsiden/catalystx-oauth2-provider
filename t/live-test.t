@@ -12,6 +12,8 @@ use HTTP::Headers;
 use HTTP::Request::Common;
 use LWP::Simple qw(!get);
 
+use JSON::Any;
+
 # make sure testapp works
 use ok 'TestApp';
 
@@ -36,6 +38,9 @@ subtest 'test for protected resource', sub {
      $mech->add_header( Authorization => $mac );
      my $test_api = 'http://localhost/my/test';
      $mech->get_ok($test_api);
+     my $j   = JSON::Any->new();
+     my $obj = $j->from_json($mech->content);
+     is($obj->{'error'}, 'invalid_request');
 };
 
 done_testing();

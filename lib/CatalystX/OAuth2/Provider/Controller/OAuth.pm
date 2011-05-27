@@ -17,6 +17,7 @@ __PACKAGE__->config( traits => [qw/AuthorizationCode/] );
 
 =head2 get_client
 =cut
+# TODO: Generic AUTH_INFO Model
 sub _get_client : Private {
     my ( $self, $ctx ) = @_;
     foreach my $k ( values %{ $self->{auth_info} } ) {

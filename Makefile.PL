@@ -30,6 +30,10 @@ test_requires 'Catalyst::Plugin::Session::Store::FastMmap';
 test_requires 'Catalyst::Plugin::Session::State::Cookie';
 test_requires 'Catalyst::Plugin::Session::State::URI';
 test_requires 'Catalyst::Plugin::Session::State::Auth';
+test_requires 'Catalyst::View::TT';
+test_requires 'Catalyst::View::JSON';
+test_requires 'JSON::Any';
+
 
 author_tests 't/author';
 
