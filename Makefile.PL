@@ -9,6 +9,7 @@ all_from 'lib/CatalystX/OAuth2/Provider.pm';
 
 requires 'Moose';
 requires 'CatalystX::InjectComponent';
+requires 'CatalystX::Component::Traits';
 requires 'Moose::Autobox';
 requires 'Catalyst::Controller::ActionRole';
 requires 'OAuth::Lite';

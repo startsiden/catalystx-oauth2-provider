@@ -1,1 +1,2 @@
 0.0003 - Fix missing dependencies
+0.0004 - Fix another missing dep CatalystX::Component::Traits in Makefile.PL
