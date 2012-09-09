@@ -87,8 +87,11 @@ sub type { "insufficient_scope" }
 package CatalystX::OAuth2::Provider::Error;
 
 =head1 AUTHOR
+
 =head1 COPYRIGHT AND LICENSE
+
   This package is stolen from OAuth::Lite2::Server::Error
+
 =cut
 
 1;
