@@ -2,7 +2,7 @@ NAME
     CatalystX::OAuth2::Provider -
 
 VERSION
-    Version 0.0005
+    Version 0.0006
 SYNOPSIS
         package MyApp;
         use Moose;
