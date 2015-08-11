@@ -35,7 +35,7 @@ test_requires 'Catalyst::Plugin::Session::State::Auth';
 test_requires 'Catalyst::View::TT';
 test_requires 'Catalyst::View::JSON';
 test_requires 'JSON::Any';
-
+test_requires 'Test::Simple' => '1.001014' # for the 'ok' module;
 
 author_tests 't/author';
 
