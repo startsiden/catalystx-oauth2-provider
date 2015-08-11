@@ -17,6 +17,7 @@ requires 'JSON::XS';
 requires 'HTTP::Headers::Util';
 requires 'Digest::HMAC_SHA1';
 requires 'namespace::autoclean';
+requires 'MooseX::Types::Common';
 
 build_requires 'Catalyst::Runtime' => '5.80015';
 build_requires 'Test::WWW::Mechanize::Catalyst';
